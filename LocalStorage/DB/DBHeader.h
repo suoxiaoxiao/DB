@@ -12,9 +12,8 @@
 #import "DBTable.h"
 #import "BaseTableModel.h"
 
-//#ifndef OPEN_LOG_INFO
+
 #define OPEN_LOG_INFO
 
-//#endif
 
 #endif /* DBHeader_h */

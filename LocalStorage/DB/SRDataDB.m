@@ -47,7 +47,33 @@ static FMDatabase *db;
         return nil;
     }
     
-    
+}
+
+- (BOOL)openDB
+{
+    if ([[self currentDataBase] open]) {
+        
+        NSLog(@"打开数据库成功");
+        return YES;
+        
+    }else{
+        
+        NSLog(@"打开数据库失败");
+        return NO;
+    }
+}
+- (BOOL)closeDB
+{
+    if ([[self currentDataBase] close]) {
+        
+        NSLog(@"关闭数据库成功");
+        return YES;
+        
+    }else{
+        
+        NSLog(@"关闭数据库失败");
+        return NO;
+    }
 }
 
 - (NSString *)dbpath

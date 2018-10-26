@@ -32,6 +32,24 @@
 - (NSString *)insertTableViewStatementsForTableName:(NSString *)tableName propertyModel:(id)model;
 
 /**
+ 修改数据
+ 
+ @param tableName 表的名字
+ @param model 数据
+ @return 插入数据到这个表的sqlite语句
+ */
+- (NSString *)updateTableViewStatementsForTableName:(NSString *)tableName propertyModel:(id)model;
+
+/**
+ 删除数据
+ 
+ @param tableName 表的名字
+ @param identifie 数据标记
+ @return 插入数据到这个表的sqlite语句
+ */
+- (NSString *)deleteTableViewStatementsForTableName:(NSString *)tableName ofIdentifie:(NSInteger)identifie;
+
+/**
  读取表中数据
 
  @param tableName 表名
@@ -40,7 +58,7 @@
 - (NSString *)readTable:(NSString *)tableName;
 
 /**
- 更新表
+ 升级表
 
  @param tableName 表名
  @param updates 更新的字段和类型

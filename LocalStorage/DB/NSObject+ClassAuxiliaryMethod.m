@@ -52,6 +52,14 @@
         [mArray addObject:propertystr];
     }
     
+    if ([mArray containsObject:@"identifie"]) {
+        NSInteger index = [mArray indexOfObject:@"identifie"];
+        if (mArray.count > (index+1)) {
+            [mArray removeObjectAtIndex:(index+1)];
+            [mArray removeObject:@"identifie"];
+        }
+    }
+    
     return mArray.copy;
 }
 

@@ -124,7 +124,14 @@
 
 - (BOOL)insertModel:(BaseTableModel *)model
 {
+    BOOL ret = [[SRDataDB sharedInstance] openDB];
+    if (!ret) {
+        NSLog(@"插入失败");
+        return NO;
+    }
     BOOL result = [[[SRDataDB sharedInstance] currentDataBase] executeUpdate:[[SqliteStatements sharedInstance] insertTableViewStatementsForTableName:self.tableName propertyModel:model]];
+    
+    [[SRDataDB sharedInstance] closeDB];
     
     if (result) {
        
@@ -140,9 +147,15 @@
 
 - (NSArray *)getDataList
 {
+    BOOL ret = [[SRDataDB sharedInstance] openDB];
+    if (!ret) {
+        NSLog(@"查询数据失败");
+        return @[];
+    }
     
     FMResultSet * resultSet = [[[SRDataDB sharedInstance] currentDataBase] executeQuery:[[SqliteStatements sharedInstance] readTable:self.tableName]];
     
+   
     NSMutableArray *marray = [NSMutableArray array];
     
     while ([resultSet next]) {
@@ -150,10 +163,60 @@
         [marray addObject:[resultSet resultObjectForClass:_propertyClass]];
         
     }
-    
+    [[SRDataDB sharedInstance] closeDB];
     return marray;
 }
 
+
+- (BOOL)updateModel:(BaseTableModel *)model
+{
+    BOOL ret = [[SRDataDB sharedInstance] openDB];
+    if (!ret) {
+        NSLog(@"更新数据失败");
+        return NO;
+    }
+    
+    BOOL result = [[[SRDataDB sharedInstance] currentDataBase] executeUpdate:[[SqliteStatements sharedInstance] updateTableViewStatementsForTableName:self.tableName propertyModel:model]];
+    
+    [[SRDataDB sharedInstance] closeDB];
+    
+    if (result) {
+        
+        NSLog(@"更新数据成功");
+        return YES;
+    } else {
+        
+        NSLog(@"更新数据失败");
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)deleteModelOf:( NSInteger )identifer
+{
+    BOOL ret = [[SRDataDB sharedInstance] openDB];
+    if (!ret) {
+        NSLog(@"删除数据失败");
+        return NO;
+    }
+    
+     BOOL result = [[[SRDataDB sharedInstance] currentDataBase] executeUpdate:[[SqliteStatements sharedInstance] deleteTableViewStatementsForTableName:self.tableName ofIdentifie:identifer]];
+    
+    [[SRDataDB sharedInstance] closeDB];
+    
+    if (result) {
+        
+        NSLog(@"删除数据成功");
+        return YES;
+    } else {
+        
+        NSLog(@"删除数据失败");
+        return NO;
+    }
+    
+    return NO;
+}
 
 
 

@@ -50,7 +50,7 @@
     NSMutableString *mstring = [[NSMutableString alloc] init];
     [mstring appendString:@"CREATE TABLE IF NOT EXISTS "];
     [mstring appendString:tableName];
-    [mstring appendString:@" (id integer PRIMARY KEY AUTOINCREMENT"];
+    [mstring appendString:@" (identifie integer PRIMARY KEY AUTOINCREMENT"];
     
     for (int i = 0; i < array.count; i = i+2) {
         
@@ -107,7 +107,7 @@
         if (i > 0) {
             [mstring appendString:@","];
         }
-         //加密
+        //加密
         if ([text isEqualToString:@"text"]) {
             
             //这里不一定是NSString
@@ -209,5 +209,118 @@
     return mstring;
     
 }
+
+
+/**
+ 修改数据
+ 
+ @param tableName 表的名字
+ @param model 数据
+ @return 插入数据到这个表的sqlite语句
+ */
+- (NSString *)updateTableViewStatementsForTableName:(NSString *)tableName propertyModel:(id)model
+{
+    
+//    NSString *sql = @"UPDATE t_agreeOrder SET id = ? WHERE  bankSt = ?";
+//    BOOL res = [db executeUpdate:sql, @"1", @"修改数据"];
+    
+    NSMutableString *mstring = [NSMutableString string];
+    
+    [mstring appendString:@"UPDATE "];
+    [mstring appendString:tableName];
+    [mstring appendString:@" SET"];
+    NSArray *array = [[model class] getAllPropertyOfSelfClass];
+    
+     for (int i = 0; i < array.count; i = i+2) {
+        
+         if (i == 0 || i == array.count-3) {
+             
+         }else{
+             [mstring appendString:@","];
+         }
+         NSString *name = array[i];
+         NSString *property = array[i + 1];
+         NSString *text = [property getDBMarkingOfPropertyAttribute];
+         
+         [mstring appendFormat:@" %@ = ",name];
+         
+         //加密
+         if ([text isEqualToString:@"text"]) {
+             
+             //这里不一定是NSString
+             //两种处理方式NSDictionary NSMutableDictionary NSMutableArray  NSArray
+             id value = [model valueForKey:name];
+             if (value == nil) {
+                 value = @"";
+             }
+             NSString *stringvalue;
+             
+             if ([value isKindOfClass:[NSString class]]) {
+                 
+                 stringvalue = value;
+                 
+             }else if ([value isKindOfClass:[NSDictionary class]] ||
+                       [value isKindOfClass:[NSArray class]]) {
+                 
+                 stringvalue = [NSString jsonStringWithObject:value];
+                 
+             }
+             
+             NSData *data = [stringvalue dataUsingEncoding:NSUTF8StringEncoding];
+             NSString *resultvalue = [[DBSecurity sharedInstance] sr_encryotionOfString:data];
+             
+             [mstring appendString:@"'"];
+             [mstring appendString:resultvalue];
+             [mstring appendString:@"'"];
+             
+             continue;
+             
+         }else if ([text isEqualToString:@"integer"]) {
+             
+             //整数
+             NSInteger value = [[model valueForKey:name] integerValue];
+             NSString *stringvalue = [NSString stringWithFormat:@"%ld",value];
+             [mstring appendString:stringvalue];
+             
+         }else if ([text isEqualToString:@"real"]) {
+             
+             //浮点数
+             float value = [[model valueForKey:name] floatValue];
+             NSString *stringvalue = [NSString stringWithFormat:@"%f",value];
+             [mstring appendString:stringvalue];
+             
+         }else if ([text isEqualToString:@"blob"]) {
+             
+             NSInteger value = [[model valueForKey:name] integerValue];
+             NSString *stringvalue = [NSString stringWithFormat:@"%ld",value];
+             [mstring appendString:stringvalue];
+         }
+         
+    }
+    
+    [mstring appendFormat:@" WHERE identifie = %@",[model valueForKey:@"identifie"]];
+    
+    return mstring;
+}
+
+/**
+ 删除数据
+ 
+ @param tableName 表的名字
+ @param identifie 数据标记
+ @return 插入数据到这个表的sqlite语句
+ */
+- (NSString *)deleteTableViewStatementsForTableName:(NSString *)tableName ofIdentifie:(NSInteger)identifie
+{
+    NSMutableString *mstring = [NSMutableString string];
+    
+    [mstring appendString:@"DELETE FROM "];
+    [mstring appendString:tableName];
+    [mstring appendFormat:@" WHERE identifie=%ld",identifie];
+    
+    return mstring;
+}
+
+
 
 @end

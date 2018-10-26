@@ -17,4 +17,7 @@
 
 - (NSString *)dbpath;
 
+- (BOOL)openDB;
+- (BOOL)closeDB;
+
 @end

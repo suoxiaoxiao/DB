@@ -10,7 +10,7 @@
 
 @interface BaseTableModel : NSObject
 
-@property (nonatomic , copy) NSString *identifie;
+@property (nonatomic , assign) NSInteger identifie;
 
 @property (nonatomic , copy) NSString *filePath;        //加密文件路径
 @property (nonatomic , copy) NSString *tmpPath;         //临时文件夹

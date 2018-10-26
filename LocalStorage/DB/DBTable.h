@@ -20,6 +20,8 @@
 
 - (NSArray *)getDataList;
 
+- (BOOL)updateModel:(BaseTableModel *)model;
 
+- (BOOL)deleteModelOf:( NSInteger )identifer;
 
 @end

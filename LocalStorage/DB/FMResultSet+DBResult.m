@@ -20,6 +20,15 @@
     
     id obj = [[cls alloc] init];
     
+    //先设置identifie
+    id idResult = [self objectForColumn:@"identifie"];
+    
+    if (idResult == nil || [idResult isKindOfClass:[NSNull class]]) {
+        [obj setObject:@(0) forKey:@"identifie"];
+    }else{
+        [obj setValue:idResult forKey:@"identifie"];
+    }
+    
     //这是这个类的所有属性
     NSArray *array = [cls getAllPropertyOfSelfClass];
     
